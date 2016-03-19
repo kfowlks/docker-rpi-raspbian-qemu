@@ -1,3 +1,3 @@
 FROM resin/rpi-raspbian:jessie
 
-ADD /usr/bin/qemu-arm-static /usr/bin
+ADD qemu-arm-static /usr/bin
