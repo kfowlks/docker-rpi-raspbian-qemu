@@ -1,0 +1,10 @@
+sudo: required
+
+services:
+  - docker
+
+script:
+  - "sudo apt-get --yes --no-install-recommends install binfmt-support qemu-user-static"
+  - "sudo echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:' > /proc/sys/fs/binfmt_misc/register"
+  - "docker build -t sedden/rpi-raspbian-qemu ."
+  - "docker run --rm -i -t sedden/rpi-raspbian-qemu /bin/echo 'Hello World'"
