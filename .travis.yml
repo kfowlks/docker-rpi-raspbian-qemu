@@ -15,7 +15,12 @@ script:
   - docker run --rm -i -t sedden/rpi-raspbian-qemu:jessie /bin/echo 'Hello World'
 
 after_success: |
-  if [ -n "${DOCKER_EMAIL}" ] && [ -n "${DOCKER_USERNAME}" ] && [ -n "${DOCKER_PASSWORD}" ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]
+  if [ -n "${DOCKER_EMAIL}" ] && [ -n "${DOCKER_TOKEN}" ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]
+  then
+    mkdir -p $HOME/.docker
+    echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"${DOCKER_TOKEN}\",\"email\":\"${DOCKER_EMAIL}\"}}}" > $HOME/.docker/config.json
+    docker push sedden/rpi-raspbian-qemu:jessie
+  elif [ -n "${DOCKER_EMAIL}" ] && [ -n "${DOCKER_USERNAME}" ] && [ -n "${DOCKER_PASSWORD}" ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]
   then
     docker login -e="${DOCKER_EMAIL}" -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}" || exit 1
     docker push sedden/rpi-raspbian-qemu:jessie
