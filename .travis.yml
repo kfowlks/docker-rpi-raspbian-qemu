@@ -10,14 +10,18 @@ before_script:
   - echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:' | sudo tee -a /proc/sys/fs/binfmt_misc/register
 
 script:
-  - cp /usr/bin/qemu-arm-static .
-  - docker build -t sedden/rpi-raspbian-qemu:jessie .
+  - cp /usr/bin/qemu-arm-static wheezy/
+  - docker build -t sedden/rpi-raspbian-qemu:wheezy wheezy/
+  - docker run --rm -i -t sedden/rpi-raspbian-qemu:wheezy /bin/echo 'Hello World'
+  - cp /usr/bin/qemu-arm-static jessie/
+  - docker build -t sedden/rpi-raspbian-qemu:jessie jessie/
   - docker run --rm -i -t sedden/rpi-raspbian-qemu:jessie /bin/echo 'Hello World'
 
 after_success: |
   if [ -n "${DOCKER_CONFIG_JSON}" ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]
   then
     mkdir -p $HOME/.docker
-    echo $DOCKER_CONFIG_JSON > $HOME/.docker/config.json
+    echo "${DOCKER_CONFIG_JSON}" > $HOME/.docker/config.json
+    docker push sedden/rpi-raspbian-qemu:wheezy
     docker push sedden/rpi-raspbian-qemu:jessie
   fi
