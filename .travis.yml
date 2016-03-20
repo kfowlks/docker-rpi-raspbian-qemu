@@ -13,3 +13,10 @@ script:
   - cp /usr/bin/qemu-arm-static .
   - docker build -t sedden/rpi-raspbian-qemu:jessie .
   - docker run --rm -i -t sedden/rpi-raspbian-qemu:jessie /bin/echo 'Hello World'
+
+after_success: |
+  if [ -n "${DOCKER_EMAIL}" ] && [ -n "${DOCKER_USERNAME}" ] && [ -n "${DOCKER_PASSWORD}" ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]
+  then
+    docker login -e="${DOCKER_EMAIL}" -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+    docker push sedden/rpi-raspbian-qemu:jessie
+  fi
