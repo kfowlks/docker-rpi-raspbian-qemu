@@ -18,10 +18,10 @@ script:
   - docker run --rm -i -t sedden/rpi-raspbian-qemu:jessie /bin/echo 'Hello World'
 
 after_success: |
-  if [ -n "${DOCKER_CONFIG_JSON}" ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]
+  if [ -n "${DOCKER_EMAIL}" ] && [ -n "${DOCKER_TOKEN}" ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]
   then
     mkdir -p $HOME/.docker
-    echo "${DOCKER_CONFIG_JSON}" > $HOME/.docker/config.json
-    docker push sedden/rpi-raspbian-qemu:wheezy
-    docker push sedden/rpi-raspbian-qemu:jessie
+    echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"${DOCKER_TOKEN}\",\"email\":\"${DOCKER_EMAIL}\"}}}" > $HOME/.docker/config.json
+    docker push sedden/rpi-raspbian-qemu:wheezy || exit 1
+    docker push sedden/rpi-raspbian-qemu:jessie || exit 1
   fi
