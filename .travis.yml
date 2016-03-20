@@ -17,6 +17,6 @@ script:
 after_success: |
   if [ -n "${DOCKER_EMAIL}" ] && [ -n "${DOCKER_USERNAME}" ] && [ -n "${DOCKER_PASSWORD}" ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]
   then
-    docker login -e="${DOCKER_EMAIL}" -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+    docker login -e="${DOCKER_EMAIL}" -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}" || exit 1
     docker push sedden/rpi-raspbian-qemu:jessie
   fi
