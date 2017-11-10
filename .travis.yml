@@ -16,13 +16,13 @@ env:
 
 script:
   - cp /usr/bin/qemu-arm-static ${DISTRO}/
-  - docker build -t sedden/rpi-raspbian-qemu:${DISTRO} ${DISTRO}/
-  - docker run --rm -i -t sedden/rpi-raspbian-qemu:${DISTRO} /bin/echo 'Hello World'
+  - docker build -t fowlk1kd/rpi-raspbian-qemu:${DISTRO} ${DISTRO}/
+  - docker run --rm -i -t fowlk1kd/rpi-raspbian-qemu:${DISTRO} /bin/echo 'Hello World'
 
 after_success: |
   if [ -n "${DOCKER_EMAIL}" ] && [ -n "${DOCKER_TOKEN}" ] && [ "${TRAVIS_PULL_REQUEST}" = 'false' ]
   then
     mkdir -p $HOME/.docker
     echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"${DOCKER_TOKEN}\",\"email\":\"${DOCKER_EMAIL}\"}}}" > $HOME/.docker/config.json
-    docker push sedden/rpi-raspbian-qemu:${DISTRO} || exit 1
+    docker push fowlk1kd/rpi-raspbian-qemu:${DISTRO} || exit 1
   fi
